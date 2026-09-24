@@ -5,8 +5,10 @@ export default function Simulator() {
   const [tempo, setTempo] = useState(120);
   const [pads, setPads] = useState(Array(16).fill(false));
   const [currentStep, setCurrentStep] = useState(0);
+  const [projectName, setProjectName] = useState('mon-pattern');
   const audioContextRef = useRef(null);
   const scheduleRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const noteFrequencies = {
     'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
@@ -82,6 +84,66 @@ export default function Simulator() {
     setPads(newPads);
   };
 
+  // --- EXPORT ---
+  const exportProject = () => {
+    const projectData = {
+      appName: 'beat-maker-teensy',
+      version: '1.0',
+      name: projectName || 'mon-pattern',
+      tempo: tempo,
+      pads: pads,
+      createdAt: new Date().toISOString()
+    };
+
+    const jsonString = JSON.stringify(projectData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${projectData.name}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // --- IMPORT ---
+  const triggerImport = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileImport = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+
+        if (!Array.isArray(data.pads) || data.pads.length !== 16) {
+          alert('Fichier invalide : le pattern doit contenir 16 pas.');
+          return;
+        }
+
+        setPads(data.pads);
+        setTempo(typeof data.tempo === 'number' ? data.tempo : 120);
+        setProjectName(data.name || 'pattern-importe');
+        setCurrentStep(0);
+        setIsRunning(false);
+      } catch (err) {
+        alert('Erreur : ce fichier n\'est pas un projet valide (JSON invalide).');
+      }
+    };
+    reader.readAsText(file);
+
+    // Reset input so the same file can be re-imported later if needed
+    event.target.value = '';
+  };
+
   return (
     <div className="simulator-container">
       <h2>🎮 Interactive Simulator</h2>
@@ -149,6 +211,50 @@ export default function Simulator() {
         borderRadius: '10px',
         marginTop: '2rem'
       }}>
+        <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>💾 Sauvegarder / Charger un projet</h3>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ color: '#00d9ff', display: 'block', marginBottom: '0.5rem' }}>
+            Nom du projet
+          </label>
+          <input
+            type="text"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="mon-pattern"
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '5px',
+              border: '1px solid #00d9ff',
+              background: 'rgba(0,0,0,0.3)',
+              color: '#fff'
+            }}
+          />
+        </div>
+
+        <div className="button-group">
+          <button onClick={exportProject}>💾 Exporter (.json)</button>
+          <button onClick={triggerImport}>📂 Importer</button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={handleFileImport}
+            style={{ display: 'none' }}
+          />
+        </div>
+        <p style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.8rem' }}>
+          Exportez votre pattern pour le sauvegarder ou le transférer sur un autre appareil (PC ↔ téléphone). Importez un fichier .json pour recharger un pattern.
+        </p>
+      </div>
+
+      <div style={{
+        background: 'rgba(0, 217, 255, 0.1)',
+        padding: '1.5rem',
+        borderRadius: '10px',
+        marginTop: '2rem'
+      }}>
         <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>📖 How to Use</h3>
         <ul style={{ paddingLeft: '1.5rem', lineHeight: '1.8' }}>
           <li><strong>Click pads</strong> to enable/disable steps</li>
@@ -156,6 +262,7 @@ export default function Simulator() {
           <li><strong>Tempo slider</strong> adjusts playback speed</li>
           <li><strong>Clear button</strong> resets all steps</li>
           <li><strong>Randomize button</strong> generates random patterns</li>
+          <li><strong>Exporter/Importer</strong> save or load your pattern as a .json file</li>
         </ul>
       </div>
     </div>
