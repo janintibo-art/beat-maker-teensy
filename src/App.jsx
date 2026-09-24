@@ -11,27 +11,27 @@ function App() {
   const [tutorials] = useState([
     {
       id: 1,
-      title: "Getting Started with Teensy",
-      description: "Learn the basics of Teensy microcontroller",
-      content: "Teensy is a complete USB-based microcontroller development system...",
-      components: ["Teensy 4.1", "USB Cable"],
-      difficulty: "Beginner"
+      title: "Premiers pas avec Teensy",
+      description: "Apprenez les bases du microcontrôleur Teensy",
+      content: "Le Teensy est un système de développement complet à base de microcontrôleur, connecté en USB...",
+      components: ["Teensy 4.1", "Câble USB"],
+      difficulty: "Débutant"
     },
     {
       id: 2,
-      title: "Build Your First Drum Machine",
-      description: "Create a simple 4-step drum machine",
-      content: "In this tutorial, you will build a basic drum machine...",
-      components: ["Teensy 4.1", "Audio Jack", "Capacitors", "Resistors"],
-      difficulty: "Intermediate"
+      title: "Construisez votre première boîte à rythme",
+      description: "Créez une boîte à rythme simple à 4 pas",
+      content: "Dans ce tutoriel, vous allez construire une boîte à rythme basique...",
+      components: ["Teensy 4.1", "Jack audio", "Condensateurs", "Résistances"],
+      difficulty: "Intermédiaire"
     },
     {
       id: 3,
-      title: "Add MIDI Support",
-      description: "Control your drum machine with MIDI",
-      content: "MIDI (Musical Instrument Digital Interface) allows...",
-      components: ["Teensy 4.1", "MIDI Jack", "Resistors"],
-      difficulty: "Advanced"
+      title: "Ajouter le support MIDI",
+      description: "Contrôlez votre boîte à rythme avec MIDI",
+      content: "Le MIDI (Musical Instrument Digital Interface) permet...",
+      components: ["Teensy 4.1", "Jack MIDI", "Résistances"],
+      difficulty: "Avancé"
     },
   ]);
 
@@ -45,7 +45,7 @@ function App() {
               className={currentPage === "tutorials" ? "active" : ""}
               onClick={() => setCurrentPage("tutorials")}
             >
-              📚 Tutorials
+              📚 Tutoriels
             </button>
           </li>
           <li>
@@ -53,7 +53,7 @@ function App() {
               className={currentPage === "editor" ? "active" : ""}
               onClick={() => setCurrentPage("editor")}
             >
-              ⚙️ Code Editor
+              ⚙️ Éditeur de code
             </button>
           </li>
           <li>
@@ -61,7 +61,7 @@ function App() {
               className={currentPage === "simulator" ? "active" : ""}
               onClick={() => setCurrentPage("simulator")}
             >
-              🎮 Simulator
+              🎮 Simulateur
             </button>
           </li>
           <li>
@@ -69,7 +69,7 @@ function App() {
               className={currentPage === "circuit" ? "active" : ""}
               onClick={() => setCurrentPage("circuit")}
             >
-              🔧 Circuit Builder
+              🔧 Constructeur de circuit
             </button>
           </li>
           <li>
@@ -77,7 +77,7 @@ function App() {
               className={currentPage === "components" ? "active" : ""}
               onClick={() => setCurrentPage("components")}
             >
-              🧰 Components
+              🧰 Composants
             </button>
           </li>
         </ul>

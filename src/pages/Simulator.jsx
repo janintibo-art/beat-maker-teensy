@@ -195,12 +195,13 @@ export default function Simulator() {
     };
     reader.readAsText(file);
 
+    // Reset input so the same file can be re-imported later if needed
     event.target.value = '';
   };
 
   return (
     <div className="simulator-container">
-      <h2>🎮 Interactive Simulator</h2>
+      <h2>🎮 Simulateur interactif</h2>
 
       <div style={{
         background: 'rgba(0, 217, 255, 0.1)',
@@ -226,18 +227,18 @@ export default function Simulator() {
 
           <div style={{ textAlign: 'center' }}>
             <button onClick={togglePlay} style={{ padding: '0.8rem 1.5rem', fontSize: '1rem' }}>
-              {isRunning ? '⏸️ Stop' : '▶️ Play'}
+              {isRunning ? '⏸️ Stop' : '▶️ Lecture'}
             </button>
           </div>
 
           <div style={{ textAlign: 'right', color: '#00d9ff' }}>
-            <p style={{ fontSize: '0.9rem', margin: '0.5rem 0' }}>Current Step</p>
+            <p style={{ fontSize: '0.9rem', margin: '0.5rem 0' }}>Pas actuel</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{currentStep + 1} / 16</p>
           </div>
         </div>
       </div>
 
-      <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>16-Step Sequencer</h3>
+      <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>Séquenceur 16 pas</h3>
       <div className="simulator-grid">
         {pads.map((isPad, idx) => (
           <div
@@ -255,8 +256,8 @@ export default function Simulator() {
       </div>
 
       <div className="button-group" style={{ marginTop: '2rem' }}>
-        <button onClick={clearGrid}>🗑️ Clear</button>
-        <button onClick={randomize}>🎲 Randomize</button>
+        <button onClick={clearGrid}>🗑️ Effacer</button>
+        <button onClick={randomize}>🎲 Aléatoire</button>
       </div>
 
       <div style={{
@@ -315,15 +316,15 @@ export default function Simulator() {
         borderRadius: '10px',
         marginTop: '2rem'
       }}>
-        <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>📖 How to Use</h3>
+        <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>📖 Comment utiliser</h3>
         <ul style={{ paddingLeft: '1.5rem', lineHeight: '1.8' }}>
-          <li><strong>Click pads</strong> to enable/disable steps</li>
-          <li><strong>Play button</strong> starts/stops the sequencer</li>
-          <li><strong>Tempo slider</strong> adjusts playback speed</li>
-          <li><strong>Clear button</strong> resets all steps</li>
-          <li><strong>Randomize button</strong> generates random patterns</li>
-          <li><strong>Auto-save</strong> keeps your work even if you close the app</li>
-          <li><strong>Exporter/Importer</strong> save or load your pattern as a .json file</li>
+          <li><strong>Cliquez sur les pads</strong> pour activer/désactiver les pas</li>
+          <li><strong>Le bouton Lecture</strong> démarre/arrête le séquenceur</li>
+          <li><strong>Le curseur de tempo</strong> ajuste la vitesse de lecture</li>
+          <li><strong>Le bouton Effacer</strong> réinitialise tous les pas</li>
+          <li><strong>Le bouton Aléatoire</strong> génère un pattern aléatoire</li>
+          <li><strong>La sauvegarde automatique</strong> conserve votre travail même après fermeture de l'app</li>
+          <li><strong>Exporter/Importer</strong> sauvegarde ou charge votre pattern en fichier .json</li>
         </ul>
       </div>
     </div>

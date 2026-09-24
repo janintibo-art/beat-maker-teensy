@@ -7,11 +7,11 @@ const DEFAULT_CODE = `#include <Audio.h>
 #include <SerialFlash.h>
 
 // GUItool: begin automatically generated code
-AudioSynthWaveform   waveform1;
-AudioSynthWaveform   waveform2;
-AudioMixer4          mixer1;
-AudioMixer4          mixer2;
-AudioOutputI2S       i2s1;
+AudioSynthWaveform      waveform1;
+AudioSynthWaveform      waveform2;
+AudioMixer4              mixer1;
+AudioMixer4              mixer2;
+AudioOutputI2S           i2s1;
 
 AudioConnection patchCord1(waveform1, 0, mixer1, 0);
 AudioConnection patchCord2(waveform2, 0, mixer1, 1);
@@ -51,26 +51,26 @@ export default function CodeEditor() {
   const [board, setBoard] = useState('teensy41');
 
   const handleCompile = async () => {
-    setStatus('⏳ Compiling...');
+    setStatus('⏳ Compilation en cours...');
     try {
       if (window.teensyAPI) {
         const result = await window.teensyAPI.compileSketch(code, board);
-        setStatus('✅ Compilation successful!');
+        setStatus('✅ Compilation réussie !');
       }
     } catch (error) {
-      setStatus('❌ Compilation failed: ' + error.message);
+      setStatus('❌ Échec de la compilation : ' + error.message);
     }
   };
 
   const handleUpload = async () => {
-    setStatus('⏳ Uploading to Teensy...');
+    setStatus('⏳ Téléversement vers le Teensy...');
     try {
       if (window.teensyAPI) {
         const result = await window.teensyAPI.uploadTeensy(code, board);
-        setStatus('✅ Upload successful!');
+        setStatus('✅ Téléversement réussi !');
       }
     } catch (error) {
-      setStatus('❌ Upload failed: ' + error.message);
+      setStatus('❌ Échec du téléversement : ' + error.message);
     }
   };
 
@@ -82,10 +82,10 @@ export default function CodeEditor() {
   return (
     <div className="editor-container">
       <div className="editor-panel">
-        <h3>⚙️ Code Editor</h3>
+        <h3>⚙️ Éditeur de code</h3>
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ color: '#00d9ff', marginRight: '1rem' }}>
-            Board:
+            Carte :
             <select
               value={board}
               onChange={(e) => setBoard(e.target.value)}
@@ -112,14 +112,14 @@ export default function CodeEditor() {
           spellCheck="false"
         />
         <div className="button-group">
-          <button onClick={handleCompile}>🔨 Compile</button>
-          <button onClick={handleUpload}>🚀 Upload</button>
-          <button onClick={handleReset}>🔄 Reset</button>
+          <button onClick={handleCompile}>🔨 Compiler</button>
+          <button onClick={handleUpload}>🚀 Téléverser</button>
+          <button onClick={handleReset}>🔄 Réinitialiser</button>
         </div>
       </div>
 
       <div className="editor-panel">
-        <h3>📊 Reference & Output</h3>
+        <h3>📊 Référence et sortie</h3>
         <div style={{
           flex: 1,
           background: '#0a0e27',
@@ -130,18 +130,18 @@ export default function CodeEditor() {
           marginBottom: '1rem'
         }}>
           <div style={{ color: '#00ff00', fontFamily: 'monospace', fontSize: '0.85rem' }}>
-            <p><strong>Audio Library Reference:</strong></p>
-            <p>• AudioSynthWaveform - Generate sine/square waves</p>
-            <p>• AudioSynthNoisePink - Pink noise generator</p>
-            <p>• AudioMixer4 - Mix up to 4 audio inputs</p>
-            <p>• AudioOutputI2S - Output via I2S (DAC)</p>
-            <p>• AudioControlSGTL5000 - Audio codec control</p>
+            <p><strong>Référence bibliothèque audio :</strong></p>
+            <p>• AudioSynthWaveform - Génère des ondes sinus/carrées</p>
+            <p>• AudioSynthNoisePink - Générateur de bruit rose</p>
+            <p>• AudioMixer4 - Mixe jusqu'à 4 entrées audio</p>
+            <p>• AudioOutputI2S - Sortie via I2S (DAC)</p>
+            <p>• AudioControlSGTL5000 - Contrôle du codec audio</p>
             <br />
-            <p><strong>Common Frequencies (Hz):</strong></p>
-            <p>• C4: 262 | D4: 294 | E4: 330 | F4: 349</p>
-            <p>• G4: 392 | A4: 440 | B4: 494 | C5: 523</p>
+            <p><strong>Fréquences courantes (Hz) :</strong></p>
+            <p>• C4 : 262 | D4 : 294 | E4 : 330 | F4 : 349</p>
+            <p>• G4 : 392 | A4 : 440 | B4 : 494 | C5 : 523</p>
             <br />
-            <p><strong>Waveforms:</strong></p>
+            <p><strong>Formes d'onde :</strong></p>
             <p>• WAVEFORM_SINE</p>
             <p>• WAVEFORM_SQUARE</p>
             <p>• WAVEFORM_SAWTOOTH</p>
