@@ -1,0 +1,6 @@
+{
+  "appId": "com.janintibo.beatmakertteensy",
+  "appName": "Beat Maker Teensy",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}

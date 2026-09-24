@@ -14,21 +14,25 @@
     "build": "npm run react-build && electron-builder --publish never",
     "build-win": "npm run react-build && electron-builder --win --publish never",
     "build-mac": "npm run react-build && electron-builder --mac --publish never",
-    "build-linux": "npm run react-build && electron-builder --linux --publish never"
+    "build-linux": "npm run react-build && electron-builder --linux --publish never",
+    "android:sync": "npm run react-build && npx cap sync android"
   },
   "author": "janintibo",
   "license": "MIT",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/android": "^6.1.2"
   },
   "devDependencies": {
     "react-scripts": "5.0.1",
     "electron": "31.0.0",
     "electron-builder": "25.1.0",
     "concurrently": "^7.6.0",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "@capacitor/cli": "^6.1.2"
   },
   "browserslist": {
     "production": [
