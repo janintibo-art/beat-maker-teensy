@@ -374,9 +374,9 @@ export default function CircuitBuilder() {
         </p>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: '1.5rem' }}>
+      <div className="circuit-layout">
         {/* Palette */}
-        <div style={{
+        <div className="circuit-palette" style={{
           background: 'rgba(0, 217, 255, 0.1)',
           padding: '1rem',
           borderRadius: '10px',
@@ -416,6 +416,7 @@ export default function CircuitBuilder() {
         {/* Canvas */}
         <div
           ref={canvasRef}
+          className="circuit-canvas"
           style={{
             position: 'relative',
             background: 'rgba(0,0,0,0.4)',

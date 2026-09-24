@@ -53,8 +53,13 @@
 
 .main-content {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 2rem;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 /* Tutorial Styles */
@@ -296,4 +301,52 @@ button:active {
   background: rgba(0, 217, 255, 0.2);
   color: #00d9ff;
   border: 1px solid #00d9ff;
+}
+
+/* Circuit Builder layout */
+.circuit-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+}
+
+.circuit-palette {
+  min-width: 0;
+}
+
+.circuit-canvas {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Responsive: stack layouts on small screens (phones) */
+@media (max-width: 720px) {
+  .main-content {
+    padding: 1rem;
+  }
+
+  .navbar {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .circuit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-container {
+    grid-template-columns: 1fr;
+  }
+
+  .simulator-container {
+    padding: 1rem;
+  }
 }
