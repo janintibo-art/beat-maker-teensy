@@ -1,19 +1,74 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+const AUTOSAVE_KEY = 'beat-maker-teensy-autosave';
+
 export default function Simulator() {
   const [isRunning, setIsRunning] = useState(false);
   const [tempo, setTempo] = useState(120);
   const [pads, setPads] = useState(Array(16).fill(false));
   const [currentStep, setCurrentStep] = useState(0);
   const [projectName, setProjectName] = useState('mon-pattern');
+  const [saveStatus, setSaveStatus] = useState('');
   const audioContextRef = useRef(null);
   const scheduleRef = useRef(null);
   const fileInputRef = useRef(null);
+  const hasLoadedRef = useRef(false);
+  const saveTimeoutRef = useRef(null);
 
   const noteFrequencies = {
     'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
     'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25
   };
+
+  // --- AUTOSAVE: load on mount ---
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(AUTOSAVE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (Array.isArray(data.pads) && data.pads.length === 16) {
+          setPads(data.pads);
+        }
+        if (typeof data.tempo === 'number') {
+          setTempo(data.tempo);
+        }
+        if (data.name) {
+          setProjectName(data.name);
+        }
+      }
+    } catch (err) {
+      // Ignore corrupted autosave data
+    } finally {
+      hasLoadedRef.current = true;
+    }
+  }, []);
+
+  // --- AUTOSAVE: save on every change (debounced) ---
+  useEffect(() => {
+    if (!hasLoadedRef.current) return; // Don't overwrite before initial load completes
+
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+
+    saveTimeoutRef.current = setTimeout(() => {
+      try {
+        const data = {
+          name: projectName,
+          tempo: tempo,
+          pads: pads,
+          savedAt: new Date().toISOString()
+        };
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(data));
+        setSaveStatus('💾 Sauvegardé automatiquement');
+        setTimeout(() => setSaveStatus(''), 1500);
+      } catch (err) {
+        // localStorage might be unavailable (private mode, quota, etc.) - fail silently
+      }
+    }, 500);
+
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [pads, tempo, projectName]);
 
   const playNote = (frequency, duration = 0.1) => {
     if (!audioContextRef.current) {
@@ -140,7 +195,6 @@ export default function Simulator() {
     };
     reader.readAsText(file);
 
-    // Reset input so the same file can be re-imported later if needed
     event.target.value = '';
   };
 
@@ -211,7 +265,12 @@ export default function Simulator() {
         borderRadius: '10px',
         marginTop: '2rem'
       }}>
-        <h3 style={{ color: '#00d9ff', marginBottom: '1rem' }}>💾 Sauvegarder / Charger un projet</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h3 style={{ color: '#00d9ff', margin: 0 }}>💾 Sauvegarder / Charger un projet</h3>
+          <span style={{ color: '#4ade80', fontSize: '0.85rem', opacity: saveStatus ? 1 : 0, transition: 'opacity 0.3s' }}>
+            {saveStatus}
+          </span>
+        </div>
 
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ color: '#00d9ff', display: 'block', marginBottom: '0.5rem' }}>
@@ -245,7 +304,8 @@ export default function Simulator() {
           />
         </div>
         <p style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.8rem' }}>
-          Exportez votre pattern pour le sauvegarder ou le transférer sur un autre appareil (PC ↔ téléphone). Importez un fichier .json pour recharger un pattern.
+          Votre pattern est sauvegardé automatiquement sur cet appareil (même après fermeture de l'app).
+          Utilisez "Exporter" pour le transférer vers un autre appareil (PC ↔ téléphone).
         </p>
       </div>
 
@@ -262,6 +322,7 @@ export default function Simulator() {
           <li><strong>Tempo slider</strong> adjusts playback speed</li>
           <li><strong>Clear button</strong> resets all steps</li>
           <li><strong>Randomize button</strong> generates random patterns</li>
+          <li><strong>Auto-save</strong> keeps your work even if you close the app</li>
           <li><strong>Exporter/Importer</strong> save or load your pattern as a .json file</li>
         </ul>
       </div>
