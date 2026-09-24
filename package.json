@@ -2,7 +2,7 @@
   "name": "beat-maker-teensy",
   "version": "1.0.0",
   "description": "Educational IDE for learning and building Teensy-based drum machine",
-  "main": "electron/main.js",
+  "main": "public/electron.js",
   "homepage": "./",
   "scripts": {
     "react-start": "react-scripts start",
