@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import * as Tone from 'tone';
+import { PolySynth, Synth, Transport, start, now } from 'tone';
 
 export default function Simulator() {
   const [isRunning, setIsRunning] = useState(false);
   const [tempo, setTempo] = useState(120);
   const [pads, setPads] = useState(Array(16).fill(false));
   const [currentStep, setCurrentStep] = useState(0);
-  const [synth] = useState(() => new Tone.PolySynth(Tone.Synth, {
+  const [synth] = useState(() => new PolySynth(Synth, {
     oscillator: { type: 'square' },
     envelope: {
       attack: 0.005,
@@ -21,13 +21,10 @@ export default function Simulator() {
   useEffect(() => {
     if (!isRunning) return;
 
-    const now = Tone.now();
-    const transport = Tone.Transport;
-    transport.bpm.value = tempo;
+    Transport.bpm.value = tempo;
+    const stepDuration = (60 / tempo / 4);
 
-    const stepDuration = (60 / tempo / 4); // 16th note
-
-    const schedule = Tone.Transport.scheduleRepeat(() => {
+    const schedule = Transport.scheduleRepeat(() => {
       setCurrentStep(step => {
         const nextStep = (step + 1) % 16;
 
@@ -40,11 +37,11 @@ export default function Simulator() {
       });
     }, stepDuration);
 
-    transport.start();
+    Transport.start();
 
     return () => {
-      transport.stop();
-      transport.cancel();
+      Transport.stop();
+      Transport.cancel();
     };
   }, [isRunning, tempo, pads, synth]);
 
@@ -56,7 +53,7 @@ export default function Simulator() {
 
   const togglePlay = async () => {
     if (!isRunning) {
-      await Tone.start();
+      await start();
     }
     setIsRunning(!isRunning);
   };
