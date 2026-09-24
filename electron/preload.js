@@ -1,6 +1,5 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge } = require('electron');
 
-contextBridge.exposeInMainWorld('teensyAPI', {
-  uploadTeensy: (code, board) => ipcRenderer.invoke('upload-teensy', { code, board }),
-  compileSketch: (code, board) => ipcRenderer.invoke('compile-sketch', { code, board }),
+contextBridge.exposeInMainWorld('electron', {
+  version: process.versions.electron
 });
