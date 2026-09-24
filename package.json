@@ -1,0 +1,68 @@
+{
+  "name": "beat-maker-teensy",
+  "version": "1.0.0",
+  "description": "Educational IDE for learning and building Teensy-based drum machine",
+  "main": "electron/main.js",
+  "homepage": "./",
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-start": "electron .",
+    "start": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && npm run electron-start\"",
+    "build": "npm run react-build && electron-builder",
+    "build-win": "npm run react-build && electron-builder --win",
+    "build-mac": "npm run react-build && electron-builder --mac",
+    "build-linux": "npm run react-build && electron-builder --linux"
+  },
+  "author": "janintibo",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0",
+    "tone": "^14.8.49"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.1",
+    "electron": "^latest",
+    "electron-builder": "^latest",
+    "concurrently": "^7.6.0",
+    "wait-on": "^7.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "build": {
+    "appId": "com.janintibo.beatmakertteensy",
+    "productName": "Beat Maker Teensy",
+    "files": [
+      "build/**/*",
+      "electron/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
+  }
+}
