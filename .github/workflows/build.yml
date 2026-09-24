@@ -11,12 +11,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
             artifact: 'build/Beat Maker Teensy-*.AppImage'
-          - os: macos-latest
-            artifact: 'build/Beat Maker Teensy-*.dmg'
           - os: windows-latest
             artifact: 'build/Beat Maker Teensy Setup *.exe'
 
@@ -35,7 +33,7 @@ jobs:
         run: npm run react-build
 
       - name: Build Electron app
-        run: npm run build-${{ matrix.os == 'windows-latest' && 'win' || matrix.os == 'macos-latest' && 'mac' || 'linux' }}
+        run: npm run build-${{ matrix.os == 'windows-latest' && 'win' || 'linux' }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -59,7 +57,6 @@ jobs:
         with:
           files: |
             **/*.exe
-            **/*.dmg
             **/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

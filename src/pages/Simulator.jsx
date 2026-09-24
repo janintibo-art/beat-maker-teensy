@@ -17,7 +17,6 @@ export default function Simulator() {
   }).toDestination());
 
   const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
-  const drums = ['Kick', 'Snare', 'HiHat', 'Tom'];
 
   useEffect(() => {
     if (!isRunning) return;
