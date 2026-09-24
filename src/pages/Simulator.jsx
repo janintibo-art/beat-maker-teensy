@@ -1,49 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import * as Tone from 'tone';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function Simulator() {
   const [isRunning, setIsRunning] = useState(false);
   const [tempo, setTempo] = useState(120);
   const [pads, setPads] = useState(Array(16).fill(false));
   const [currentStep, setCurrentStep] = useState(0);
-  const [synth] = useState(() => new Tone.Synth({
-    oscillator: { type: 'square' },
-    envelope: {
-      attack: 0.005,
-      decay: 0.1,
-      sustain: 0.1,
-      release: 0.1,
-    },
-  }).toDestination());
+  const audioContextRef = useRef(null);
+  const scheduleRef = useRef(null);
 
-  const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+  const noteFrequencies = {
+    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+    'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25
+  };
+
+  const playNote = (frequency, duration = 0.1) => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = audioContextRef.current;
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.type = 'square';
+    osc.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+    osc.start(now);
+    osc.stop(now + duration);
+  };
 
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning) {
+      if (scheduleRef.current) clearInterval(scheduleRef.current);
+      return;
+    }
 
-    Tone.Transport.bpm.value = tempo;
-    const stepDuration = (60 / tempo / 4);
+    const stepDuration = (60 / tempo / 4) * 1000;
 
-    const schedule = Tone.Transport.scheduleRepeat(() => {
+    scheduleRef.current = setInterval(() => {
       setCurrentStep(step => {
         const nextStep = (step + 1) % 16;
 
         if (pads[nextStep]) {
-          const noteIndex = Math.floor(nextStep / 4) % notes.length;
-          synth.triggerAttackRelease(notes[noteIndex], '16n');
+          const noteIndex = Math.floor(nextStep / 4) % Object.keys(noteFrequencies).length;
+          const notes = Object.keys(noteFrequencies);
+          playNote(noteFrequencies[notes[noteIndex]], 0.1);
         }
 
         return nextStep;
       });
     }, stepDuration);
 
-    Tone.Transport.start();
-
     return () => {
-      Tone.Transport.stop();
-      Tone.Transport.cancel();
+      if (scheduleRef.current) clearInterval(scheduleRef.current);
     };
-  }, [isRunning, tempo, pads, synth]);
+  }, [isRunning, tempo, pads]);
 
   const togglePad = (index) => {
     const newPads = [...pads];
@@ -51,10 +68,7 @@ export default function Simulator() {
     setPads(newPads);
   };
 
-  const togglePlay = async () => {
-    if (!isRunning) {
-      await Tone.start();
-    }
+  const togglePlay = () => {
     setIsRunning(!isRunning);
   };
 
